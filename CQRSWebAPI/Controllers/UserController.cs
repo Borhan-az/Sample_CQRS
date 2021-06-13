@@ -1,4 +1,6 @@
-﻿using CQRSWebAPI.Query;
+﻿using CQRSWebAPI.Command;
+using CQRSWebAPI.Model;
+using CQRSWebAPI.Query;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +22,15 @@ namespace CQRSWebAPI.Controllers
         {
             this.mediator = mediator;
         }
-        [HttpGet("/{Id}")]
-        public async Task<IActionResult> GetUserbyName(int Id, CancellationToken cancellationToken )
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetUserbyName(int Id, CancellationToken cancellationToken)
         {
             var res = await mediator.Send(new GetUserById.Query(Id), cancellationToken);
-            
-            return res==null ? NotFound() : Ok(res);
+
+            return res == null ? NotFound() : Ok(res);
         }
+        [HttpPost]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateUser(AddUser.Command command) => Ok(await mediator.Send(command));
     }
 }
