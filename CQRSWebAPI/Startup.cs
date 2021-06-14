@@ -1,3 +1,4 @@
+using CQRSWebAPI.Behaviours;
 using CQRSWebAPI.Model;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +32,7 @@ namespace CQRSWebAPI
 
             services.AddSingleton<SeedData>();
             services.AddMediatR(typeof(Startup).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>),typeof(LoggingBehaviour<,>));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
