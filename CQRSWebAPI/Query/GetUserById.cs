@@ -1,4 +1,5 @@
-﻿using CQRSWebAPI.Model;
+﻿using CQRSWebAPI.Caching;
+using CQRSWebAPI.Model;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,10 @@ namespace CQRSWebAPI.Query
     public class GetUserById
     {
         //Query 
-        public record Query(int Id) : IRequest<Response<User>>;
+        public record Query(int Id) : IRequest<Response<User>>, ICacheable
+        {
+            public string CacheKey => $"GetUserById-{Id}";
+        }
 
         public class Handler : IRequestHandler<Query, Response<User>>
         {
