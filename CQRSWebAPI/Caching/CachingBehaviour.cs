@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using CQRSWebAPI.DTOs;
+using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CQRSWebAPI.Caching
 {
-    public class CachingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : ICacheable
+    public class CachingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : ICacheable where TResponse : ResponseDto
     {
         private readonly IMemoryCache memoryCache;
         private readonly ILogger<CachingBehaviour<TRequest, TResponse>> logger;
