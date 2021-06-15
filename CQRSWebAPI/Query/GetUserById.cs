@@ -1,4 +1,5 @@
 ﻿using CQRSWebAPI.Caching;
+using CQRSWebAPI.DTOs;
 using CQRSWebAPI.Model;
 using MediatR;
 using System;
@@ -28,13 +29,17 @@ namespace CQRSWebAPI.Query
 
             public async Task<Response<User>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var user = _data.Users.FirstOrDefault(x => x.Id == request.Id);
-                return user == null ? null : new Response<User>(1, true, user);
                 // Here is The Bussines Logic
+                var user = _data.Users.FirstOrDefault(x => x.Id == request.Id);
+                return user == null ? null : new Response<User> { Id = 1, Data = user };
 
             }
         }
 
-        public record Response<T>(int Id, bool IsSuccess, T Data);
+        public class Response<T> : ResponseDto
+        {
+            public int Id { get; set; }
+            public T Data { get; set; }
+        }
     }
 }
