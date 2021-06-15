@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using CQRSWebAPI.DTOs;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CQRSWebAPI.Behaviours
 {
-    public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TResponse : ResponseDto
     {
         private readonly ILogger<LoggingBehaviour<TRequest, TResponse>> logger;
 
