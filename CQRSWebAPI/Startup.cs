@@ -1,6 +1,8 @@
 using CQRSWebAPI.Behaviours;
 using CQRSWebAPI.Caching;
+using CQRSWebAPI.Filter;
 using CQRSWebAPI.Model;
+using CQRSWebAPI.Validation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,13 +33,17 @@ namespace CQRSWebAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddControllers(opt => opt.Filters.Add(typeof(ResponseMappingFilter)));
+
+
             services.AddSingleton<SeedData>();
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddMemoryCache();
-
+            // All of our Validators
+            services.AddValidator();
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(LoggingBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>),typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(CachingBehaviour<,>));
-            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CQRSWebAPI", Version = "v1" });
