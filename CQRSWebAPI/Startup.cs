@@ -44,6 +44,7 @@ namespace CQRSWebAPI
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(LoggingBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(CachingBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>),typeof(PerformanceBehavior<,>));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CQRSWebAPI", Version = "v1" });
