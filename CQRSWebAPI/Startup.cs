@@ -1,7 +1,8 @@
-using CQRSWebAPI.Behaviours;
+using CQRSWebAPI.Behaviors;
 using CQRSWebAPI.Caching;
 using CQRSWebAPI.Filter;
 using CQRSWebAPI.Model;
+using CQRSWebAPI.Redis;
 using CQRSWebAPI.Validation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ServiceStack.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,19 +34,24 @@ namespace CQRSWebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers(opt => opt.Filters.Add(typeof(ResponseMappingFilter)));
 
-
             services.AddSingleton<SeedData>();
+
+            services.AddSingleton(typeof(IRedisClientsManager), new RedisManagerPool("redis://@localhost:6379?Db=0&ConnectTimeout=5000&IdleTimeOutSecs=100"));
+            services.AddSingleton<IRedisManager, RedisManager>();
+
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddMemoryCache();
             // All of our Validators
             services.AddValidator();
+
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(LoggingBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(CachingBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(PerformanceBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>),typeof(EventSourceBehaviour<,>));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CQRSWebAPI", Version = "v1" });
