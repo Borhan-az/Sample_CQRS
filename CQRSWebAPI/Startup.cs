@@ -45,12 +45,14 @@ namespace CQRSWebAPI
             services.AddMemoryCache();
             // All of our Validators
             services.AddValidator();
+            #region IOC
 
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(LoggingBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(CachingBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(PerformanceBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>),typeof(EventSourceBehaviour<,>));
+            #endregion
 
             services.AddSwaggerGen(c =>
             {
